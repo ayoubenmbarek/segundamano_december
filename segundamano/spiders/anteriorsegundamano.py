@@ -32,7 +32,7 @@ class segundamanoSpider(scrapy.Spider):
 		for block in response.css('div.listing_thumbs_row'):
 			myItem = SegundamanoItem()
                         img_number = block.css('div.thumbnail_photo_count ::text').extract_first()
-#                            
+                            
                         try: #added 12-12
                             num = img_number.split(' ')
                             num1 = num[0]
