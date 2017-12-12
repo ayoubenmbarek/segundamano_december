@@ -1,0 +1,5 @@
+segundamano/*.csv
+segundamano/*.log
+.scrapy
+segundamano/node_modules
+segundamano/*.CSV*
