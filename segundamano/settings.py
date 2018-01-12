@@ -9,7 +9,7 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'segundamano'
+BOT_NAME = 'segundamano' #commented 12-01-2018
 
 SPIDER_MODULES = ['segundamano.spiders']
 NEWSPIDER_MODULE = 'segundamano.spiders'

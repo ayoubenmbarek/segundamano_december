@@ -18,7 +18,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 class segundamanoSpider(scrapy.Spider):
-        name = "segundamanospider"
+        name = "segundamanospider12-01-2018"
         handle_httpstatus_list = [301, 302]#, 500]#, 403]
 	allowed_domains = ['segundamano.mx']
 	#start_urls = ['http://www.inmuebles24.com/inmuebles-en-venta.html']
@@ -29,7 +29,7 @@ class segundamanoSpider(scrapy.Spider):
 	def parse(self, response):
 	
                 myItem = SegundamanoItem()
-                myItem["Site"] = response.url  #get all data from json on script tag        
+                myItem["WEBSITE"] = response.url  #get all data from json on script tag        
                 container = response.css('div.ad-card-wrapper')
                 items = response.xpath('//script/text()').re(".*@context.*")
                 unicode_items = items[0]
@@ -37,7 +37,7 @@ class segundamanoSpider(scrapy.Spider):
                 for jsonresponse in json_items.get('itemListElement', []):
                         item_url = jsonresponse.get('item', {}).get('url')
                         #item_url = jsonresponse.get('url')
-                        request = SplashRequest(item_url, args={'wait': 0.5}, callback = self.second_page)#, dont_filter=True) 
+                        request = scrapy.Request(item_url, callback = self.second_page)#, dont_filter=True) 
                         request.meta['myItem'] = myItem
                         yield request
 
@@ -73,8 +73,8 @@ class segundamanoSpider(scrapy.Spider):
 		list_terrain = ['Terrenos','Terreno']
 		list_casas = ['casa', 'casas']
 		myItem["ANNONCE_LINK"] = response.url
-		driver = webdriver.Chrome()
-		driver.get(myItem["ANNONCE_LINK"])
+		#driver = webdriver.Chrome()
+		#driver.get(myItem["ANNONCE_LINK"])
 	        #ar-CoverPhone ar-CoverPhone_Text
 		#try:
                     #click_phone = WebDriverWait(driver, 10).until(
@@ -94,36 +94,36 @@ class segundamanoSpider(scrapy.Spider):
                 #address1 = address.split('n:')
                 #myItem['ADRESSE'] = address1[-1]
                 
-                try:    
-                        click_phone = driver.find_element_by_css_selector('.ar-CoverPhone.ar-CoverPhone_Text')
-	                click_phone.click()
-	                myItem["AGENCE_TEL"] = driver.find_element_by_css_selector('.phoneCont.ar-PhoneNumber.deskButton.v-cloak--hidden').text
-	                
-	                address = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[4]/div[1]/div[5]/div[1]/div/span').text 
-                        address1 = address.split('n:')
-                        myItem['ADRESSE'] = address1[-1]
-                        myItem['ANNONCE_DATE'] = ''
-                        date = driver.find_element_by_xpath('//div[@class="av-AdInformation_Column"]').text #publication
-                        date1 = date.split('do:')
-                        myItem['ANNONCE_DATE'] = date1[-1]
-                        #---------------------
-                        #type_imm = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[4]/div[1]/div[5]/div[3]/div/div/span').text
-                        #item["CATEGORIE"] = type_imm
-                        #----------------------------------------
-                        myItem["SURFACE_TERRAIN"] = ''
-                        surface = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[4]/div[1]/div[5]/div[5]/div/div/span').text
-                        myItem["SURFACE_TERRAIN"] = surface
+               # try:    
+                     #   click_phone = driver.find_element_by_css_selector('.ar-CoverPhone.ar-CoverPhone_Text')
+	              #  click_phone.click()
+	              #  myItem["AGENCE_TEL"] = driver.find_element_by_css_selector('.phoneCont.ar-PhoneNumber.deskButton.v-cloak--hidden').text
+	              #  
+	             #   address = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[4]/div[1]/div[5]/div[1]/div/span').text 
+                     #   address1 = address.split('n:')
+                     #   myItem['ADRESSE'] = address1[-1]
+                     #   myItem['ANNONCE_DATE'] = ''
+                      #  date = driver.find_element_by_xpath('//div[@class="av-AdInformation_Column"]').text #publication
+                      #  date1 = date.split('do:')
+                     #   myItem['ANNONCE_DATE'] = date1[-1]
+                      #  #---------------------
+                      #  #type_imm = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[4]/div[1]/div[5]/div[3]/div/div/span').text
+                     #   #item["CATEGORIE"] = type_imm
+                      #  #----------------------------------------
+                      #  myItem["SURFACE_TERRAIN"] = ''
+                     #   surface = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[4]/div[1]/div[5]/div[5]/div/div/span').text
+                     #   myItem["SURFACE_TERRAIN"] = surface
                         #---------------------------
                         #item['PIECE'] = ''
-                        habita = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[4]/div[1]/div[5]/div[4]/div/div/span').text
-                        myItem['PIECE'] = habita
-                        if myItem['SURFACE_TERRAIN'] == '':
-                                myItem["SURFACE_TERRAIN"] = habita 
-                except:
-                        pass
+                     #   habita = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[4]/div[1]/div[5]/div[4]/div/div/span').text
+                    #    myItem['PIECE'] = habita
+                   #     if myItem['SURFACE_TERRAIN'] == '':
+                  #              myItem["SURFACE_TERRAIN"] = habita 
+                #except:
+                 #       pass
                 
-	        time.sleep(1)
-                driver.quit()
+	        #time.sleep(1)
+                #driver.quit()
 		#finally:
 	        #driver.quit()
 
