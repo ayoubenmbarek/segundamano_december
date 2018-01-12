@@ -11,7 +11,7 @@ import scrapy
 class SegundamanoItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    Site = scrapy.Field()
+  #  Site = scrapy.Field()
     ANNONCE_LINK = scrapy.Field()
     FROM_SITE = scrapy.Field()
     ID_CLIENT = scrapy.Field()

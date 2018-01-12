@@ -18,7 +18,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 class segundamanoSpider(scrapy.Spider):
-        name = "segundamanoanterior12-12"
+        name = "segundamanoanterior12-01-2018"
         handle_httpstatus_list = [200]#, 302]#, 500]#, 403]
 	allowed_domains = ['segundamano.mx']
 	#start_urls = ['http://www.inmuebles24.com/inmuebles-en-venta.html']
@@ -39,7 +39,7 @@ class segundamanoSpider(scrapy.Spider):
                             myItem["PHOTO"] = num1
                         except:   
                             pass
-			myItem["Site"] = response.url
+			#myItem["Site"] = response.url
 		        url = block.css('a.listing_container ::attr(href)').extract_first()
 		        request = scrapy.Request(url, callback=self.second_page)
 		        request.meta['myItem'] = myItem
@@ -90,7 +90,7 @@ class segundamanoSpider(scrapy.Spider):
                     elif  myItem["CATEGORIE"] == ['Oficinas/locales']: 
                            myItem["MAISON_APT"] = 5
                     else:
-                                   myItem["MAISON_APT"] = ''
+                           myItem["MAISON_APT"] = ''
                            
 		    myItem["ANNONCE_TEXT"] = response.xpath('.//meta[@name="description"]/@content').extract()
 		    myItem["AGENCE_NOM"] = response.xpath('.//*[@class="primarycolor bold"]/text()').extract_first()
