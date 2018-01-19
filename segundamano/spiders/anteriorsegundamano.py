@@ -9,6 +9,7 @@ from scrapy.selector import Selector
 import ast
 import json
 import time
+import re
 from selenium.webdriver.common.by import By
 from scrapy_splash import SplashRequest
 from selenium import webdriver
@@ -18,8 +19,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 class segundamanoSpider(scrapy.Spider):
-        name = "segundamanoanterior12-01-2018"
-        handle_httpstatus_list = [200]#, 302]#, 500]#, 403]
+        name = "segundamanoanterior12-12"
+        #name = "myspider"
+        handle_httpstatus_list = [200, 301, 302]#, 500]#, 403]
 	allowed_domains = ['segundamano.mx']
 	#start_urls = ['http://www.inmuebles24.com/inmuebles-en-venta.html']
 	start_urls = ['http://viejo.segundamano.mx/mexico/inmuebles?ca=11_s&cg=1000&et=0&o=1',
@@ -60,79 +62,161 @@ class segundamanoSpider(scrapy.Spider):
 		myItem["ANNONCE_LINK"] = link#.split()
 		try:
 		    myItem['PIECE'] = response.xpath('//ul/li[contains(text(), "Habitaciones")]/strong/text()').extract_first()
+                except:
+                    pass
+                try:
 		    myItem["M2_TOTALE"] = response.xpath('//ul/li[contains(text(), "Superficie")]/strong/text()').extract_first()
+                except:
+                    pass
+                try:
 		    myItem["CATEGORIE"] = response.xpath('//ul/li[contains(text(), "Tipo de inmueble")]/strong/text()').extract()
+                except:
+                    pass
 		    
-		    specific_words_terrain = ['terreno', 'Terreno', 'TERRENO',]
-	            specific_words_casa = ['casa', 'Casa', 'CASA']
-	            specific_words_departmnent = ['departamento', 'Departamento', 'DEPARTAMENTO']
+		specific_words_terrain = ['terreno', 'Terreno', 'TERRENO',]
+	        specific_words_casa = ['casa', 'Casa', 'CASA']
+	        specific_words_departmnent = ['departamento', 'Departamento', 'DEPARTAMENTO']
+                specific_words_residencial = ['Resid','residencial', 'Residencial', 'RESIDEN']
                     #if myItem["CATEGORIE"] is None:
-		    if myItem["CATEGORIE"] == []:
+                if not myItem["CATEGORIE"]:# == []:
 		            
-		            for word in specific_words_terrain:
-		                if word in myItem["ANNONCE_LINK"]:
-		                    myItem["CATEGORIE"] == ['Terrenos']
+		        for word in specific_words_terrain:
+		            if word in myItem["ANNONCE_LINK"]:
+		                myItem["CATEGORIE"] == ['Terrenos']
+                        for word in specific_words_residencial:
+                              if word in myItem["ANNONCE_LINK"]:
+                                   myItem["CATEGORIE"] == ['Immeuble']
 	                
-		            for word in specific_words_casa:
-		                if word in myItem["ANNONCE_LINK"]:
-		                    myItem["CATEGORIE"] == ['Casas']
+		        for word in specific_words_casa:
+		            if word in myItem["ANNONCE_LINK"]:
+		                 myItem["CATEGORIE"] == ['Casas']
 		                    
-                            for word in specific_words_departmnent:
-		                        if word in myItem["ANNONCE_LINK"]:
-		                            myItem["CATEGORIE"] == ['Departamentos']
-			                
-                    if myItem["CATEGORIE"] == ['Departamentos']:
-	                   myItem["MAISON_APT"] = 2
-                    elif myItem["CATEGORIE"] == ['Casas']:
-                           myItem["MAISON_APT"] = 1
-                    elif  myItem["CATEGORIE"] == ['Terrenos']: 
+                        for word in specific_words_departmnent:
+		            if word in myItem["ANNONCE_LINK"]:
+		                 myItem["CATEGORIE"] == ['Departamentos']
+		                
+                if myItem["CATEGORIE"] == ['Departamentos']:
+                        myItem["MAISON_APT"] = 2
+                if myItem["CATEGORIE"] == ['Immeuble']:                                                                                                       
+                        myItem["MAISON_APT"] = 7
+                elif myItem["CATEGORIE"] == ['Casas']:
+                         myItem["MAISON_APT"] = 1
+                elif  myItem["CATEGORIE"] == ['Terrenos']: 
                            myItem["MAISON_APT"] = 6
-                    elif  myItem["CATEGORIE"] == ['Oficinas/locales']: 
+                elif  myItem["CATEGORIE"] == ['Oficinas/locales']: 
                            myItem["MAISON_APT"] = 5
-                    else:
-                           myItem["MAISON_APT"] = ''
-                           
-		    myItem["ANNONCE_TEXT"] = response.xpath('.//meta[@name="description"]/@content').extract()
+                elif  myItem["CATEGORIE"] == ['Bodegas']:                                                                                             
+                           myItem["MAISON_APT"] = 4
+                elif  myItem["CATEGORIE"] == ['Otros']:
+                            myItem["MAISON_APT"] = 8
+                else:
+                    myItem["MAISON_APT"] = 0
+
+
+                myItem["SITE"] =  'segundamano'       
+                try:
+                    #myItem["ANNONCE_TEXT"] = response.xpath('//p[@class="av-AdDescription"]').extract()
+    		    myItem["ANNONCE_TEXT"] = response.xpath('.//meta[@name="description"]/@content').extract_first()
+                except:
+                    pass
+                try:
 		    myItem["AGENCE_NOM"] = response.xpath('.//*[@class="primarycolor bold"]/text()').extract_first()
+                except:
+                    pass
+                try:
 		    myItem["FROM_SITE"] = 'segundamano'
-		    myItem["NOM"] = response.css('title ::text').extract_first()
+                except:
+                    pass
+                try:
+		    cc = response.css('title ::text').extract_first()
+                    bb = cc.split(',')
+                    myItem["NOM"] = bb[0]
+
+                   # myItem["NOM"] = response.xpath('//h1[@class="av-AdTitle"]/text()').extract_first()
+                except:
+                    pass
+                try:
 		    #myItem["REGION"] = response.xpath('.//*[@class="right_col"]/li/strong/text()').extract_first()
-		    myItem["QUARTIER"] = response.xpath('//ul/li[contains(text(), "Colonia")]/strong/text()').extract_first() 
-		    
-		    myItem["VILLE"] = response.xpath('.//*[@class="parameter"]/text()').extract_first()
-		    #myItem["PHOTO"] = response.xpath('.//*[@id="display_image"]/img/@src').extract_first() #commented 12-12
-		    if 'renta' in  myItem["ANNONCE_LINK"]:
-		        myItem["ACHAT_LOC"] = 2
-	            elif 'venta' in myItem["ANNONCE_LINK"]:
-	                myItem["ACHAT_LOC"] = 1
-	            else:
-	                myItem["ACHAT_LOC"] = ''    
-		    myItem["PROVINCE"] = response.css('h3.nav_element ::text').extract_first()
-                    myItem["AGENCE_ADRESSE"] = 	myItem["VILLE"]+','+ myItem["PROVINCE"]
-                    myItem["AGENCE_VILLE"] = response.css('h3.nav_element ::text').extract_first()
-                    #myItem["ADRESSE"] =	myItem["QUARTIER"]+','+ myItem["VILLE"]+','+ myItem["PROVINCE"]
-		    items = response.xpath('//script/text()').re(".*account_id.*")
-		    items1 = items[0]
-                    items2 = items1.split('attrs:')
-                    items3 = items2[-1]                        
-                    items4 = items3.split('},')
-                    items5 = '}'.join(items4)
-                    json_co = json.loads(items5)
-                    myItem["PRIX"] = json_co.get('price')+'$'
-                    myItem["AGENCE_TEL"] = json_co.get('phone')
-                    myItem['ANNONCE_DATE'] = json_co.get('orig_date')
-                    myItem["EMAIL"] = json_co.get('email') 
-                    myItem["ID_CLIENT"] = json_co.get('account_id') 
-                    myItem["PAYS_DEALER"] = 'Mexique'
-                    vv = response.css('div.AdHeaderBar > span ::text').extract_first()
-                    if 'profesional' in vv:
-                        myItem["SELLERTYPE"] = 'professionel'
+		    vv = response.xpath('//ul/li[contains(text(), "Colonia")]/strong/text()').extract_first() 
+                    if vv == 'Otra':
+                        myItem["QUARTIER"] = ''
                     else:
-                        myItem["SELLERTYPE"] = 'particulier'
+                        myItem["QUARTIER"] = vv
+                except:
+                    pass
+                try:
+		    myItem["VILLE"] = response.xpath('.//*[@class="parameter"]/text()').extract_first()
+                except:
+                    pass
+		    #myItem["PHOTO"] = response.xpath('.//*[@id="display_image"]/img/@src').extract_first() #commented 12-12
+		if 'renta' in  myItem["ANNONCE_LINK"]:
+		        myItem["ACHAT_LOC"] = 2
+	        elif 'venta' in myItem["ANNONCE_LINK"]:
+	                myItem["ACHAT_LOC"] = 1
+                elif 'traspasos' in myItem["ANNONCE_LINK"]:
+                    myItem["ACHAT_LOC"] = 'traspasos'
+	        else:
+                    myItem["ACHAT_LOC"] = ''    
+                try:
+                    myItem["PROVINCE"] = response.css('h3.nav_element ::text').extract_first() 
+                except:
+                    pass
+                #except:
+                 #   pass
+                try:
+                    myItem["AGENCE_ADRESSE"] = 	myItem["VILLE"]+','+ myItem["PROVINCE"]
+                except:
+                    pass
+                try:
+                    myItem["AGENCE_VILLE"] = response.css('h3.nav_element ::text').extract_first()
+                except:
+                    pass
+                try:
+                    myItem["ADRESSE"] = myItem["QUARTIER"]+','+ myItem["VILLE"]+','+ myItem["PROVINCE"]
+                except:
+                    pass
+                
+		items = response.xpath('//script/text()').re(".*account_id.*")
+	        items1 = items[0]
+                items2 = items1.split('attrs:')
+                items3 = items2[-1]                        
+                items4 = items3.split('},')
+                items5 = '}'.join(items4)
+                json_co = json.loads(items5)
+                try:
+                    myItem["PRIX"] = json_co.get('price')#+'$'
+                except:
+                    pass
+                try:
+                    myItem["AGENCE_TEL"] = json_co.get('phone')
+                except:
+                    pass
+                try:
+                    myItem['ANNONCE_DATE'] = json_co.get('orig_date')
+                except:
+                    pass
+                try:
+                    myItem["EMAIL"] = json_co.get('email') 
+                except:
+                    pass
+                myItem["ID_CLIENT"] = re.search(r'_(.*?).htm', myItem["ANNONCE_LINK"] ).group(1)
+                #try:
+                #    myItem["ID_CLIENT"] = json_co.get('account_id') 
+                #except:
+                #    pass
+                try:
+                    myItem["PAYS_DEALER"] = 'Mexique'
+                except:
+                    pass
+                vv = response.css('div.AdHeaderBar > span ::text').extract_first()
+                if 'profesional' in vv:
+                    myItem["SELLERTYPE"] = 'professionel'
+                else:
+                    myItem["SELLERTYPE"] = 'particulier'
                         
 		    
-		except:
-		        pass    
+#		except:
+#		        pass    
 		yield myItem        
 
 		

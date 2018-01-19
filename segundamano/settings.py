@@ -49,10 +49,10 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
-SPIDER_MIDDLEWARES = {
+#SPIDER_MIDDLEWARES = {
     #'segundamano.middlewares.SegundamanoSpiderMiddleware': 543,
-    'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
-}
+ #   'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
+#}
 DOWNLOAD_HANDLERS = {
   's3': None,
 }
@@ -61,18 +61,18 @@ FEED_EXPORTERS = {
     'csv': 'segundamano.exporters.QuoteAllCsvItemExporter',
 }
 #FEED_EXPORT_FIELDS FIELDS_TO_EXPORT
-FEED_EXPORT_FIELDS = ["ANNONCE_LINK", "FROM_SITE", "ID_CLIENT", "ANNONCE_DATE", "ACHAT_LOC", "MAISON_APT", "CATEGORIE", "NEUF_IND", "NOM", "ADRESSE","CP","VILLE", "QUARTIER", "DEPARTEMENT", "REGION", "PROVINCE", "ANNONCE_TEXT", "ETAGE", "NB_ETAGE", "LATITUDE", "LONGITUDE", "M2_TOTALE", "SURFACE_TERRAIN", "NB_GARAGE", "PHOTO", "PIECE", "PRIX", "PRIX_M2", "URL_PROMO", "PAYS_AD", "PRO_IND", "SELLERTYPE", "MINI_SITE_URL", "MINI_SITE_ID", "AGENCE_NOM", "AGENCE_ADRESSE", "AGENCE_VILLE", "AGENCE_DEPARTEMENT", "EMAIL", "WEBSITE", "AGENCE_TEL", "AGENCE_TEL_2", "AGENCE_TEL_3", "AGENCE_TEL_4", "AGENCE_FAX", "AGENCE_CONTACT", "PAYS_DEALER", "FLUX", "SITE_SOCIETE_URL", "SITE_SOCIETE_ID", "SITE_SOCIETE_NAME", "AGENCE_RCS", "SPIR_ID"] 
+FEED_EXPORT_FIELDS = ["ANNONCE_LINK", "SITE", "FROM_SITE", "ID_CLIENT", "ANNONCE_DATE", "ACHAT_LOC", "MAISON_APT", "CATEGORIE", "NEUF_IND", "NOM", "ADRESSE","CP","VILLE", "QUARTIER", "DEPARTEMENT", "REGION", "PROVINCE", "ANNONCE_TEXT", "ETAGE", "NB_ETAGE", "LATITUDE", "LONGITUDE", "M2_TOTALE", "SURFACE_TERRAIN", "NB_GARAGE", "PHOTO", "PIECE", "PRIX", "PRIX_M2", "URL_PROMO", "PAYS_AD", "PRO_IND", "SELLERTYPE", "MINI_SITE_URL", "MINI_SITE_ID", "AGENCE_NOM", "AGENCE_ADRESSE", "AGENCE_VILLE", "AGENCE_DEPARTEMENT", "EMAIL", "WEBSITE", "AGENCE_TEL", "AGENCE_TEL_2", "AGENCE_TEL_3", "AGENCE_TEL_4", "AGENCE_FAX", "AGENCE_CONTACT", "AGENCE_CP", "PAYS_DEALER", "FLUX", "SITE_SOCIETE_URL", "SITE_SOCIETE_ID", "SITE_SOCIETE_NAME", "AGENCE_RCS", "SPIR_ID"] 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
      'scrapy.downloadermiddlewares.retry.RetryMiddleware': 90,
-     'scrapy_splash.SplashCookiesMiddleware': 723,
-     'scrapy_splash.SplashMiddleware': 725,
+#     'scrapy_splash.SplashCookiesMiddleware': 723,
+ #    'scrapy_splash.SplashMiddleware': 725,
      'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
      #'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
 #    'segundamano.middlewares.MyCustomDownloaderMiddleware': 543,
 }
-DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
+#DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -117,4 +117,4 @@ HTTPCACHE_EXPIRATION_SECS = 0
 HTTPCACHE_DIR = 'httpcache'
 HTTPCACHE_IGNORE_HTTP_CODES = []
 HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage' #try it with splash
+#HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage' #try it with splash
